@@ -47,7 +47,8 @@ function parseExprStatement(expr) {
 }
 function parseVarDeclarator(expr) {
     let value = expr.init == null||undefined ?'': parseExpr(expr.init);
-    return {line:parseLoc(expr.loc),type:'variable declaration',name:parseExpr(expr.id),condition:'',value:value};
+    let name =parseExpr(expr.id);
+    return {line:parseLoc(expr.loc),type:'variable declaration',name:name,condition:'',value:value};
 }
 function parseBlock(expr) {
     return expr.body.map(parseExpr);
@@ -95,6 +96,7 @@ function parseExpr(expr) {
 function parseVarDecl(varDec) {
     return varDec.declarations.map(parseVarDeclarator);
 }
+
 function parseAssignment(expr) {
     return {line:parseLoc(expr.loc),type:'assignment expression',name:parseExpr(expr.left),condition:'',value:parseExpr(expr.right)};
 }
@@ -114,6 +116,7 @@ const parseCode = (codeToParse) => {
     let parsed = esprima.parseScript(codeToParse,{loc: true});
     return flatten(parsed.body.map(parseExpr));
 };
+
 
 export {parseCode};
 
